@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -54,7 +55,6 @@ public class NycJobMapper extends MapReduceBase implements
 			String line = value.toString();
 			if (line.contains(",")) {
 				s = line.split(",");
-				s = line.split(",");
 				id = s[0];
 				time = s[1];
 				start_longtitude = Double.parseDouble(s[2]);
@@ -68,9 +68,12 @@ public class NycJobMapper extends MapReduceBase implements
 					endNode = new Node(0, end_longtitude, end_latitude);
 					startNode.setId(mapMatching(startNode));
 					endNode.setId(mapMatching(endNode));
+					outputstring = startNode.getId() +" - "+ endNode.getId();
+					word.set(new Text(outputstring));
 					// Get the shortest path between start node and end node
 					DijkstraSP sp = new DijkstraSP(G, startNode.getId());
 					Iterable<DirectedEdge> path = sp.pathTo(endNode.getId());
+
 					if (path != null) {
 						System.out.println("Path " + startNode.getId() + "--->"
 								+ endNode.getId());
@@ -94,6 +97,7 @@ public class NycJobMapper extends MapReduceBase implements
 					}
 
 				}
+				
 			}
 
 		} catch (Exception e) {
@@ -104,6 +108,7 @@ public class NycJobMapper extends MapReduceBase implements
 	}
 
 	public static void readNodeFromDisk(Path p, JobConf conf) {
+		nodeMap = new HashMap<Integer, Node>();
 		try {
 			Path pt = p;
 			FileSystem fs = FileSystem.get(conf);
@@ -131,13 +136,54 @@ public class NycJobMapper extends MapReduceBase implements
 	}
 
 	public static void readGraphFromDisk(Path p, JobConf conf) {
-		try {
 
+		try {
+			Path pt = p;
+			FileSystem fs = FileSystem.get(conf);
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					fs.open(pt)));
+			String line = null;
+			String[] s;
+			double weight;
+			int id = 0,v = 0,w = 0, graphsize = 0,graphedges = 0;
+
+			while ((line = br.readLine()) != null) {
+				if (line.contains(" ")) {
+					s = line.split(" ");
+					id = Integer.parseInt(s[0]);
+					v = Integer.parseInt(s[1]);
+					w = Integer.parseInt(s[2]);
+					weight = Double.parseDouble(s[3]);
+
+					G.addEdge( new DirectedEdge(id,v,w,weight));
+				}
+				else{
+					if(graphsize == 0){
+						graphsize = Integer.parseInt(line);
+						G = new EdgeWeightedDigraph(graphsize);
+						continue;
+					}
+
+					if(graphedges == 0){
+						graphedges = Integer.parseInt(line);
+						continue;
+					}
+				}
+			}
+			br.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		/*
+		try {
+			Path pt = p; 
 			In in = new In(p.toString());
 			G = new EdgeWeightedDigraph(in, true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
 	}
 
 	private static int mapMatching(Node originalNode) {

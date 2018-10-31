@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 public class Point implements Serializable{
 	private double longtitude;	//x
-	private double latitude;	//γ
+	private double latitude;	//y
 	private Edge matchEdge = null;
 
 	public Point(double longtitude, double latitude) {

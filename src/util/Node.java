@@ -10,9 +10,9 @@ import util.EuclideanDistanceCalculator;
  *
  */
 public class Node  implements Serializable{
-	private int id = 0;			//***
-	private double latitude = Double.MAX_VALUE;	//γ**
-	private double longtitude = Double.MAX_VALUE;	//X****
+	private int id = 0;	//id
+	private double latitude = Double.MAX_VALUE;	//y
+	private double longtitude = Double.MAX_VALUE;//x
 	private ArrayList<Edge> adjecentList;
 	
 	public Node(int id, double longtitude, double latitude) {

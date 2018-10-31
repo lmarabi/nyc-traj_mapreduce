@@ -32,8 +32,8 @@ public class MainDriver extends Configured implements Tool {
 		Path nodePath = args.length > 2 ? new Path(args[2]) : new Path(
 				System.getProperty("user.dir") + "/hdfs/result");
 		//graphPath
-		String graphPath = args.length > 2 ? args[3] : System
-				.getProperty("user.dir") + "/data/quadtree_mbrs.txt";
+		Path graphPath =  args.length > 2 ? new Path(args[3]) : new Path(
+				System.getProperty("user.dir") + "/hdfs/result");
 		
 		// First Map-Reduce Job
 		JobConf conf = new JobConf(getConf(), MainDriver.class);

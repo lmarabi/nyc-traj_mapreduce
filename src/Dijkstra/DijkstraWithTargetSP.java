@@ -61,8 +61,8 @@ public class DijkstraWithTargetSP {
     private double[] distTo;          // distTo[v] = distance  of shortest s->v path
     private DirectedEdge[] edgeTo;    // edgeTo[v] = last edge on shortest s->v path
     private IndexMinPQ<Double> pq;    // priority queue of vertices
-    private Set<Integer> targetSet;		//Ŀ*꼯**
-    private int extendNum = 0;			//**¼Dijkstra**չ*Ĵ***
+    private Set<Integer> targetSet;		
+    private int extendNum = 0;	
 
     /**
      * Computes a shortest paths tree from <tt>s</tt> to every other vertex in
@@ -97,7 +97,6 @@ public class DijkstraWithTargetSP {
                 relax(e);  
             }
             
-            //**Dijkstra******ֹ****
             if(targetSet.contains(v)){
             	targetSet.remove(v);
             }

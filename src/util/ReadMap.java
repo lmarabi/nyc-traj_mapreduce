@@ -54,7 +54,6 @@ public class ReadMap implements Serializable {
 					if (line.contains(",")) {
 						s = line.split(",");
 
-						// WA�кͺ����нڵ�
 						id = Long.parseLong(s[0]);
 						latitude = Double.parseDouble(s[1]);
 						longtitude = Double.parseDouble(s[2]);
@@ -215,7 +214,6 @@ public class ReadMap implements Serializable {
 					if (line.contains(" ")) {
 						s = line.split(" ");
 
-						// WA�кͺ����нڵ�
 						id = Integer.parseInt(s[0]);
 						latitude = Double.parseDouble(s[1]);
 						longtitude = Double.parseDouble(s[2]);
