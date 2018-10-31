@@ -9,6 +9,7 @@
 	<property name="lib.dir" location="lib" />
 	<property name="bin.dir" location="bin" />
 	<property name="version" value="1" />
+	<property name="software" value="nyc-mapreduce" />
         <property name="ant.build.javac.source" value="1.7" />
         <property name="ant.build.javac.target" value="1.7" />
        
