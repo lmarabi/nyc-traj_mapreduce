@@ -75,8 +75,8 @@ public class NycJobMapper extends MapReduceBase implements
 					Iterable<DirectedEdge> path = sp.pathTo(endNode.getId());
 
 					if (path != null) {
-						System.out.println("Path " + startNode.getId() + "--->"
-								+ endNode.getId());
+						//System.out.println("Path " + startNode.getId() + "--->"
+						//		+ endNode.getId());
 						outputstring = id + "," + time + "," + start_longtitude
 								+ "&" + start_latitude;
 						outputline = new StringBuilder(outputstring);
