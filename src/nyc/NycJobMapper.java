@@ -3,9 +3,8 @@ package nyc;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -19,7 +18,6 @@ import org.apache.hadoop.mapred.Reporter;
 
 import util.DirectedEdge;
 import util.EdgeWeightedDigraph;
-import util.In;
 import util.Node;
 import Dijkstra.DijkstraSP;
 
@@ -45,7 +43,7 @@ public class NycJobMapper extends MapReduceBase implements
 			throws IOException {
 		String[] s;
 		double start_longtitude, start_latitude, end_longtitude, end_latitude;
-		String id, time;
+		String id, timepickup, timedropoff;
 		Node startNode;
 		Node endNode;
 		String outputstring;
@@ -55,49 +53,64 @@ public class NycJobMapper extends MapReduceBase implements
 			String line = value.toString();
 			if (line.contains(",")) {
 				s = line.split(",");
-				id = s[0];
-				time = s[1];
-				start_longtitude = Double.parseDouble(s[2]);
-				start_latitude = Double.parseDouble(s[3]);
-				end_longtitude = Double.parseDouble(s[4]);
-				end_latitude = Double.parseDouble(s[5]);
-				if (start_longtitude != 0 || end_longtitude != 0
-						|| start_latitude != 0 || end_latitude != 0) {
+				if (s.length == 7) {
+					try {
+						id = s[0];
+						timepickup = s[1];
+						timedropoff = s[2];
+						start_longtitude = Double.parseDouble(s[3]);
+						start_latitude = Double.parseDouble(s[4]);
+						end_longtitude = Double.parseDouble(s[5]);
+						end_latitude = Double.parseDouble(s[6]);
+						if (start_longtitude != 0 || end_longtitude != 0
+								|| start_latitude != 0 || end_latitude != 0) {
 
-					startNode = new Node(0, start_longtitude, start_latitude);
-					endNode = new Node(0, end_longtitude, end_latitude);
-					startNode.setId(mapMatching(startNode));
-					endNode.setId(mapMatching(endNode));
-					outputstring = startNode.getId() +" - "+ endNode.getId();
-					word.set(new Text(outputstring));
-					// Get the shortest path between start node and end node
-					DijkstraSP sp = new DijkstraSP(G, startNode.getId());
-					Iterable<DirectedEdge> path = sp.pathTo(endNode.getId());
+							startNode = new Node(0, start_longtitude,
+									start_latitude);
+							endNode = new Node(0, end_longtitude, end_latitude);
+							startNode.setId(mapMatching(startNode));
+							endNode.setId(mapMatching(endNode));
+							outputstring = startNode.getId() + " - "
+									+ endNode.getId();
+							word.set(new Text(outputstring));
+							// Get the shortest path between start node and end
+							// node
+							DijkstraSP sp = new DijkstraSP(G, startNode.getId());
+							Iterable<DirectedEdge> path = sp.pathTo(endNode
+									.getId());
 
-					if (path != null) {
-						//System.out.println("Path " + startNode.getId() + "--->"
-						//		+ endNode.getId());
-						outputstring = id + "," + time + "," + start_longtitude
-								+ "&" + start_latitude;
-						outputline = new StringBuilder(outputstring);
-						for (DirectedEdge edge : path) {
-							// int start = edge.from();
-							int end = edge.to();
-							// Node sNode = nodeMap.get(start);
-							Node eNode = nodeMap.get(end);
-							// System.out.println(sNode.toString() + "\t"
-							// + eNode.toString());
-							outputstring = "," + eNode.getLongtitude() + "&"
-									+ eNode.getLatitude();
-							outputline.append(outputstring);
-							word.set(new Text(outputline.toString()));
-							output.collect(word, one);
+							if (path != null) {
+								// System.out.println("Path " +
+								// startNode.getId() +
+								// "--->"
+								// + endNode.getId());
+								outputstring = id + "," + timepickup + "," + timedropoff+ ","
+										+ start_longtitude + "&"
+										+ start_latitude;
+								outputline = new StringBuilder(outputstring);
+								for (DirectedEdge edge : path) {
+									// int start = edge.from();
+									int end = edge.to();
+									// Node sNode = nodeMap.get(start);
+									Node eNode = nodeMap.get(end);
+									// System.out.println(sNode.toString() +
+									// "\t"
+									// + eNode.toString());
+									outputstring = "," + eNode.getLongtitude()
+											+ "&" + eNode.getLatitude();
+									outputline.append(outputstring);
+									word.set(new Text(outputline.toString()));
+									output.collect(word, one);
+
+								}
+							}
 
 						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-
 				}
-				
+
 			}
 
 		} catch (Exception e) {
@@ -145,7 +158,7 @@ public class NycJobMapper extends MapReduceBase implements
 			String line = null;
 			String[] s;
 			double weight;
-			int id = 0,v = 0,w = 0, graphsize = 0,graphedges = 0;
+			int id = 0, v = 0, w = 0, graphsize = 0, graphedges = 0;
 
 			while ((line = br.readLine()) != null) {
 				if (line.contains(" ")) {
@@ -155,16 +168,15 @@ public class NycJobMapper extends MapReduceBase implements
 					w = Integer.parseInt(s[2]);
 					weight = Double.parseDouble(s[3]);
 
-					G.addEdge( new DirectedEdge(id,v,w,weight));
-				}
-				else{
-					if(graphsize == 0){
+					G.addEdge(new DirectedEdge(id, v, w, weight));
+				} else {
+					if (graphsize == 0) {
 						graphsize = Integer.parseInt(line);
 						G = new EdgeWeightedDigraph(graphsize);
 						continue;
 					}
 
-					if(graphedges == 0){
+					if (graphedges == 0) {
 						graphedges = Integer.parseInt(line);
 						continue;
 					}
@@ -176,14 +188,10 @@ public class NycJobMapper extends MapReduceBase implements
 		}
 
 		/*
-		try {
-			Path pt = p; 
-			In in = new In(p.toString());
-			G = new EdgeWeightedDigraph(in, true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
+		 * try { Path pt = p; In in = new In(p.toString()); G = new
+		 * EdgeWeightedDigraph(in, true); } catch (Exception e) {
+		 * e.printStackTrace(); }
+		 */
 	}
 
 	private static int mapMatching(Node originalNode) {
