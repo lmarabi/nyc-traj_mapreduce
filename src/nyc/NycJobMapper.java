@@ -100,10 +100,10 @@ public class NycJobMapper extends MapReduceBase implements
 									outputstring = "," + eNode.getLongtitude()
 											+ "&" + eNode.getLatitude();
 									outputline.append(outputstring);
-									word.set(new Text(outputline.toString()));
-									output.collect(word, NullWritable.get());
 
 								}
+								word.set(new Text(outputline.toString()));
+								output.collect(word, NullWritable.get());
 							}
 
 						}

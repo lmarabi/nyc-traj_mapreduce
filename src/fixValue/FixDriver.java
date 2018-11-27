@@ -4,7 +4,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.FileInputFormat;
@@ -13,8 +12,6 @@ import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
-import org.apache.hadoop.mapred.lib.MultipleInputs;
-import org.apache.hadoop.mapreduce.filecache.DistributedCache;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -39,13 +36,17 @@ public class FixDriver extends Configured implements Tool {
 
 		conf.setJobName("FIX traj");
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(NullWritable.class);
+		conf.setOutputValueClass(Text.class);
 
 		conf.setMapperClass(FixJobMapper.class);
 		
+		conf.setCombinerClass(FixJobReducer.class);
+		conf.setReducerClass(FixJobReducer.class);
+		
 		conf.setInputFormat(TextInputFormat.class);
 		conf.setOutputFormat(TextOutputFormat.class);
-		conf.setNumReduceTasks(0);
+		//conf.setNumReduceTasks(1);
+		
 
 		FileInputFormat.setInputPaths(conf, input);
 		FileOutputFormat.setOutputPath(conf, output);
