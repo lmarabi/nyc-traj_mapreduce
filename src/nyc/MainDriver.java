@@ -5,6 +5,7 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
@@ -45,7 +46,7 @@ public class MainDriver extends Configured implements Tool {
 		conf.set("nodePath", nodePath.toString());
 		conf.set("graphPath", graphPath.toString());
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(IntWritable.class);
+		conf.setOutputValueClass(NullWritable.class);
 
 		conf.setMapperClass(NycJobMapper.class);
 		conf.setCombinerClass(NycJobReducer.class);

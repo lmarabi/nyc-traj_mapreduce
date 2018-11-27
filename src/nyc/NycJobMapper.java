@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.MapReduceBase;
@@ -22,7 +23,7 @@ import util.Node;
 import Dijkstra.DijkstraSP;
 
 public class NycJobMapper extends MapReduceBase implements
-		Mapper<Object, Text, Text, IntWritable> {
+		Mapper<Object, Text, Text, NullWritable> {
 
 	private static Map<Integer, Node> nodeMap = null;
 	private static EdgeWeightedDigraph G = null;
@@ -39,7 +40,7 @@ public class NycJobMapper extends MapReduceBase implements
 
 	@Override
 	public void map(Object key, Text value,
-			OutputCollector<Text, IntWritable> output, Reporter reporter)
+			OutputCollector<Text, NullWritable> output, Reporter reporter)
 			throws IOException {
 		String[] s;
 		double start_longtitude, start_latitude, end_longtitude, end_latitude;
@@ -100,7 +101,7 @@ public class NycJobMapper extends MapReduceBase implements
 											+ "&" + eNode.getLatitude();
 									outputline.append(outputstring);
 									word.set(new Text(outputline.toString()));
-									output.collect(word, one);
+									output.collect(word, NullWritable.get());
 
 								}
 							}
