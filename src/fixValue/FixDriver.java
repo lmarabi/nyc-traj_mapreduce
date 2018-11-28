@@ -45,7 +45,7 @@ public class FixDriver extends Configured implements Tool {
 		
 		conf.setInputFormat(TextInputFormat.class);
 		conf.setOutputFormat(TextOutputFormat.class);
-		//conf.setNumReduceTasks(1);
+		conf.setNumReduceTasks(1);
 		
 
 		FileInputFormat.setInputPaths(conf, input);
