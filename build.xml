@@ -14,8 +14,8 @@
         <property name="ant.build.javac.target" value="1.7" />
        
 	<!-- <property name="main.class" value="nyc.MainDriver" /> -->
-	<property name="main.class" value="fixValue.FixDriver" />
-
+	<!-- <property name="main.class" value="fixValue.FixDriver" /> -->
+ 	<property name="main.class" value="fixTwoValue.FixTwoDriver" /> 
 
 
 	<!--
